@@ -1,0 +1,93 @@
+---
+title: "Analyzing Non-Voters in the US: A Tidying and Transformation Exercise in R"
+author: "Mohammed Rahman"
+date: "2023-03-06"
+output: html_document
+---
+
+<!-- https://rpubs.com/mrcuny/analyzing-non-voters-in-the-us -->
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Overview
+
+This analysis is based on a dataset behind the story [Why Many Americans Don't Vote](https://projects.fivethirtyeight.com/non-voters-poll-2020-election/) from FiveThirtyEight that explores why some Americans do not vote in presidential elections.
+
+The original dataset contains information on a variety of demographic, socioeconomic, and attitudinal factors that contribute to non-voting. 
+
+In this analysis, we will be selecting a subset of variables to explore the relationships between non-voting and key demographic and socioeconomic factors.
+
+## Data Cleaning and Transformation
+
+First, let's load the libraries we will be using:
+
+```{r message=FALSE, warning=FALSE}
+library(dplyr)
+library(readr)
+```
+
+Next, we will load the original dataset into R:
+
+```{r warning=FALSE, message=FALSE}
+url <- "https://raw.githubusercontent.com/fivethirtyeight/data/master/non-voters/nonvoters_data.csv"
+nonvoters <- read_csv(url)
+```
+
+This dataset has `r ncol(nonvoters)` columns and `r nrow(nonvoters)` rows.
+
+Here are the column names:
+
+```{r}
+colnames(nonvoters)
+```
+
+### Select relevant columns
+
+We will select a subset of variables from the dataset that are most relevant to our analysis. Specifically, we will focus on the following variables:
+
+- ppage: Age of respondent
+- educ: Highest educational attainment category
+- race: Race of respondent, census categories
+- gender: Gender of respondent
+- income_cat: Household income category of respondent
+- voter_category: Voter category of respondent: always, sporadic or rarely/never
+
+```{r}
+nonvoters <- nonvoters %>%
+  select(ppage, educ, race, gender, income_cat, voter_category)
+```
+
+Let's view the first `10` rows:
+
+```{r}
+head(nonvoters, 10)
+```
+
+
+### Rename columns
+
+Let's use better and clear column names, and get rid of unnecessary abbreviations:
+
+```{r}
+nonvoters <- nonvoters %>%
+  rename(
+    age = ppage,
+    highest_education_level = educ,
+    income_category = income_cat
+  )
+```
+
+The renamed columns now look like this:
+
+```{r}
+head(nonvoters, 10)
+```
+
+
+## Conclusions
+
+In conclusion, the non-voters dataset provides valuable insights into the demographics and attitudes of non-voters in the United States. By tidying the dataset, we were able to create a more useful and manageable subset of the data that includes only the relevant columns. We also renamed some of the columns to make them more interpretable.
+
+To extend and verify the work from the selected article, one could conduct more detailed analyses to investigate the reasons behind non-voting among different demographic groups. This could include conducting statistical tests to determine if there are significant differences in the reasons for non-voting between different age, race, or income groups. Additionally, it would be interesting to explore the effectiveness of various voter outreach and mobilization strategies, such as door-to-door canvassing, phone banking, or social media campaigns. Such analyses could help to identify effective strategies for increasing voter turnout in future elections.
